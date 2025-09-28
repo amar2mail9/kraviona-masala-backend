@@ -12,7 +12,7 @@ DBConnection()
 app.use(cors({
     origin:process.env.FRONTEND_URL,
     methods:["POST","GET","PUT","DELETE"],
-    credentials:true
+    credentials:false
 }))
 // middleware
 app.use(express.json())

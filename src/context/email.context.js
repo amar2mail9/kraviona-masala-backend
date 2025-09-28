@@ -3,14 +3,12 @@ import dotenv from 'dotenv'
 dotenv.config()
 // Create a test account or replace with real credentials.
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  service: "gmail",
   auth: {
-    user: process.env.NODEMAILER_EMAIL,
-    pass:process.env.NODEMAILER_PASS
+    user: process.env.NODEMAILER_EMAIL, // e.g. amar2mail9@gmail.com
+    pass: process.env.NODEMAILER_PASS, // App password
   },
-});
+});;
 
 transporter.verify((error, success) => {
   if (error) {
