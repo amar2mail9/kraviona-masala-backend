@@ -1,8 +1,9 @@
 import { medialModel } from "../models/media.model.js";
+import multer from "multer"
 
-const uploadImage = async (req,res)=>{
+export const uploadImage = async (req, res) => {
     try {
-        const {userID,image,info}= red.file
+        const { image, info } = red.file
         const user = await req.user
 
         if (!userID) return res.status(400).send({success:false,message:"Login again"});

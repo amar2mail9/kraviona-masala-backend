@@ -65,6 +65,10 @@ type:String,required:true
         type:String,
         default:"user",
         enum:["user",'seller',"admin"]
+    },
+    isBlocked: {
+      type: String,
+      default: false
     }
   },
   {

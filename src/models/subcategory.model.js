@@ -1,6 +1,6 @@
 import mongoose, { Schema, model } from "mongoose"
-const categorySchema = new Schema({
-    categoryName: {
+const subcategorySchema = new Schema({
+    subcategoryName: {
         type: String,
         unique: true,
         lowercase: true,
@@ -11,7 +11,10 @@ const categorySchema = new Schema({
         type: String,
         required: true
     },
-    author: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: "user"
+    },
     image: {
         type: String,
 
@@ -26,4 +29,4 @@ const categorySchema = new Schema({
 }, { timestamps: true })
 
 
-export const categoryModel = model("category", categorySchema)
+export const subcategoryModel = model("category", subcategorySchema)

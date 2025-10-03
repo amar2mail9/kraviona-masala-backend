@@ -58,7 +58,7 @@ export const registerUser = async (req, res) => {
       fullname,
       email,
       phone,
-      otp: optGenerator,
+      otp: optGenerator(),
       role:role.toLowerCase(),
       password: await bcrypt.hash(password, 10),
       userID: `KRAV${Date.now()}`,
@@ -107,7 +107,7 @@ export const verifyOtp = async (req, res) => {
         user.isVerified = true;
         user.otp = null;
         user.token = await jwt.sign(
-          { id: user._id, role: user.role, email: user.email },
+          { id: user._id, role: user.role, email: user.email, isVerified: user.isVerified },
           process.env.SECRET_KEY,
           { expiresIn: "7d" }
         );
@@ -158,7 +158,7 @@ export const resendOtp = async (req, res) => {
       });
 
     if (user) {
-      user.otp = optGenerator;
+      user.otp = optGenerator();
       await user.save();
       sendOTP(email, user.otp.toString(), user.fullname);
       return res.status(200).send({
@@ -213,7 +213,7 @@ export const loginUserPassword = async (req, res) => {
 
     // generate token
     user.token = jwt.sign(
-      { id: user._id, role: user.role, email: user.email },
+      { id: user._id, role: user.role, email: user.email ,isVerified:user.isVerified},
       process.env.SECRET_KEY,
       { expiresIn: "7d" }
     );
