@@ -16,11 +16,11 @@ const productSchema = new Schema({
         }
     ],
     price: { type: Number, default: 0 },
-    discount: { type: Number, default: 0, min: 0, max: 10 },
+    discount: { type: Number, default: 0, min: 0, max: 100 },
     stock: { type: Number, required: true },
     status: { type: String, enum: ["in stock", "out of stock", "limited stock"], default: "in stock" },
-    category: { type: Schema.Types.ObjectId, ref: "category", required: true },
-    subCategory: { type: Schema.Types.ObjectId, ref: "category" },
+    category: { type: String, required: true },
+
     author: {
         type: Schema.Types.ObjectId,
         ref: "user"

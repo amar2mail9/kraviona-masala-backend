@@ -107,7 +107,7 @@ export const verifyOtp = async (req, res) => {
         user.isVerified = true;
         user.otp = null;
         user.token = await jwt.sign(
-          { id: user._id, role: user.role, email: user.email, isVerified: user.isVerified },
+          { _id: user._id, role: user.role, email: user.email, isVerified: user.isVerified },
           process.env.SECRET_KEY,
           { expiresIn: "7d" }
         );
@@ -213,7 +213,7 @@ export const loginUserPassword = async (req, res) => {
 
     // generate token
     user.token = jwt.sign(
-      { id: user._id, role: user.role, email: user.email ,isVerified:user.isVerified},
+      { _id: user._id, role: user.role, email: user.email ,isVerified:user.isVerified},
       process.env.SECRET_KEY,
       { expiresIn: "7d" }
     );

@@ -1,10 +1,11 @@
 import express from "express"
-import { createCategory ,privateCategories,publicCategories} from "../controllers/category.controller.js"
+import { createCategory, getAllPublicCategories, getSellerCategories, } from "../controllers/category.controller.js"
 import { verifyToken } from "../middleware/verfiy.middleware.js"
 
 export const categoryRouter = express.Router()
 
 categoryRouter.post('/category',verifyToken ,createCategory)
-categoryRouter.get('/categories',publicCategories)
+categoryRouter.get('/categories', getAllPublicCategories)
 
-categoryRouter.get('/private/categories',verifyToken,privateCategories)
+
+categoryRouter.get('/seller/categories',verifyToken, getSellerCategories)

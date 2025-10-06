@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose"
+import  { Schema, model } from "mongoose"
 const categorySchema = new Schema({
     categoryName: {
         type: String,
@@ -11,7 +11,7 @@ const categorySchema = new Schema({
         type: String,
         required: true
     },
-    author: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    author: { type: Schema.Types.ObjectId, ref: "User" },
     image: {
         type: String,
 
