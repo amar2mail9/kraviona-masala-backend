@@ -24,6 +24,9 @@ app.use(cors({
 app.use(express.json())
 
 app.use('/api/v1',userRouter)
+console.log("Email:", process.env.NODEMAILER_EMAIL);
+console.log("Pass:", process.env.NODEMAILER_PASS ? "Loaded" : "Missing");
+
 
 app.use('/api/v1', categoryRouter)
 app.use('/api/v1', ProductRouter)

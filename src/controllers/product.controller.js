@@ -15,7 +15,7 @@ export const createProduct = async (req, res) => {
             stock,
             status,
             category,
-
+          isPublished
 
         } = req.body;
 
@@ -46,8 +46,8 @@ export const createProduct = async (req, res) => {
             stock,
             status,
             category,
-
-            author,
+          isPublished
+          , author,
             slug
         });
 
@@ -109,4 +109,133 @@ export const getSellerAllProducts = async (req, res) => {
   }
 };
 
+// ======================= GET SINGLE PRODUCT =======================
+export const getSingleProduct = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const product = await productModal.findOne({ slug, isPublished: true });
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+    res.status(200).json({ success: true, product });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
+
+export const getSingleProductByID = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("get product id:", id);
+    const product = await productModal.findById(id);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+    res.status(200).json({ success: true, product });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ======================= UPDATE PRODUCT =======================
+export const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("update product id:", id);
+
+    const {
+      title,
+      description,
+      images,
+      thumbnail,
+      price,
+      discount,
+      stock,
+      status,
+      category,
+      isPublished
+    } = req.body;
+
+    const author = req.user;
+    if (!author) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    }
+
+    const product = await productModal.findById(id);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // Update fields if they are provided in the request body
+    if (title) {
+      product.title = title;
+      product.slug = slugify(title, { lower: true, strict: true });
+    }
+    if (description) product.description = description;
+    if (images) product.images = images;
+    if (thumbnail) product.thumbnail = thumbnail;
+    if (price !== undefined) product.price = price;
+    if (discount !== undefined) product.discount = discount;
+    if (stock !== undefined) product.stock = stock;
+    if (status) product.status = status;
+    if (category) product.category = category;
+    if (isPublished !== undefined) product.isPublished = isPublished;
+
+    await product.save();
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      product,
+    });
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// ======================= DELETE PRODUCT =======================
+export const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const author = req.user;
+
+    if (!author) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    }
+
+    const product = await productModal.findById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // Await deletion
+    await productModal.deleteOne({ _id: id });
+
+    return res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

@@ -1,24 +1,24 @@
-import nodemailer from "nodemailer"
-import dotenv from 'dotenv'
-dotenv.config()
-// Create a test account or replace with real credentials.
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
-  secure: true,
   auth: {
-    user: process.env.NODEMAILER_EMAIL, // e.g. amar2mail9@gmail.com
-    pass: process.env.NODEMAILER_PASS, // App password
+    user: process.env.NODEMAILER_EMAIL,
+    pass: process.env.NODEMAILER_PASS,
   },
-});;
+});
 
 transporter.verify((error, success) => {
   if (error) {
-    console.error("Transporter Error:", error);
+    console.error("❌ Transporter Error:", error);
   } else {
-    console.log("Server ready:", success);
+    console.log("✅ Transporter ready to send mails!");
   }
 });
-
+console.log("Email:", process.env.NODEMAILER_EMAIL);
+console.log("Pass:", process.env.NODEMAILER_PASS ? "Loaded" : "Missing");
 
 
 export const sendOTP = async (email,otp,fullname) => {

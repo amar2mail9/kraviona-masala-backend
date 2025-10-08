@@ -92,3 +92,81 @@ export const privateCategories = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+export const getCategoryById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const category = await categoryModel.findById(id);
+        if (!category) {
+            return res.status(404).json({ success: false, message: "Category not found" });
+        }
+        res.status(200).json({ success: true, category });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const updateCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { categoryName, image, description, isPublished } = req.body;
+        const user = req.user;
+
+        if (!user) return res.status(400).send({ success: false, message: "Login again" });
+        if (!user.isVerified) return res.status(400).send({ success: false, message: "Please login with OTP" });
+        if (user.role === "user") return res.status(403).send({ success: false, message: "Not authorized" });
+        if (!categoryName) return res.status(400).send({ success: false, message: "Category name required" });
+        if (!image) return res.status(400).send({ success: false, message: "Image is required" });
+
+        const category = await categoryModel.findById(id);
+        if (!category) return res.status(404).send({ success: false, message: "Category not found" });
+        if (category.author.toString() !== user._id.toString() && user.role !== "admin") {
+            return res.status(403).send({ success: false, message: "You are not authorized to update this category" });
+        }
+
+        const slug = slugify(categoryName, { lower: true });
+        const isExist = await categoryModel.findOne({ slug, _id: { $ne: id } });
+        if (isExist) return res.status(400).send({ success: false, message: "Category name already exists" });
+
+        category.categoryName = categoryName;
+        category.description = description;
+        category.image = image;
+        category.isPublished = isPublished;
+        category.slug = slug;
+
+        await category.save();
+
+        return res.status(200).send({
+            success: true,
+            message: "Category updated successfully",
+            category
+        });
+
+    } catch (error) {
+        return res.status(500).send({ success: false, message: error.message });
+    }
+};
+
+export const deleteCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = req.user;
+
+        if (!user) return res.status(400).send({ success: false, message: "Login again" });
+        if (!user.isVerified) return res.status(400).send({ success: false, message: "Please login with OTP" });
+        if (user.role === "user") return res.status(403).send({ success: false, message: "Not authorized" });
+
+        const category = await categoryModel.findById(id);
+        if (!category) return res.status(404).send({ success: false, message: "Category not found" });
+        if (category.author.toString() !== user._id.toString() && user.role !== "admin") {
+            return res.status(403).send({ success: false, message: "You are not authorized to delete this category" });
+        }
+
+        await categoryModel.findByIdAndDelete(id);
+
+        return res.status(200).send({ success: true, message: "Category deleted successfully" });
+
+    } catch (error) {
+        return res.status(500).send({ success: false, message: error.message });
+    }
+};
