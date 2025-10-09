@@ -65,7 +65,7 @@ export const getSellerCategories = async (req, res) => {
             return res.status(403).json({ success: false, message: "Only Seller can access all categories" });
         }
 
-        const categories = await categoryModel.find({ author: "68e290fc18fc43d95fd80020" }).sort({ createdAt: -1 });
+        const categories = await categoryModel.find({ author: user._id }).sort({ createdAt: -1 });
         if (!categories || categories.length === 0) {
             return res.status(404).json({ success: false, message: "No categories found" });
         }
